@@ -1,17 +1,19 @@
-const fpPromise = import("https://fpjscdn.net/v3/W4X6mMlsrLJumj10Q1fA")
-	.then(FingerprintJS => FingerprintJS.load({
-		region: "eu"
-	}));
+// const fpPromise = import("https://fpjscdn.net/v3/W4X6mMlsrLJumj10Q1fA")
+// 	.then(FingerprintJS => FingerprintJS.load({
+// 		region: "eu"
+// 	}));
 
-fpPromise
-	.then(fp => fp.get())
-	.then(result => {
-		const clientID = result.visitorId;
-		client(clientID);
-		console.log(clientID)
-	});
+// fpPromise
+// 	.then(fp => fp.get())
+// 	.then(result => {
+// 		const clientID = result.visitorId;
+// 		client(clientID);
+// 		console.log(clientID)
+// 	});
 
-function client(clientID) {
+client("clientID");
+
+async function client(clientID) {
 
 	let socket = io();
 
@@ -26,7 +28,9 @@ function client(clientID) {
       submit.removeEventListener("click", onSubmit);
     }
   }
-  
+
+
+
 	function sendc2sPacket(packet, packet_data) {
     try {
     	socket.emit('c2s', { "packet": packet, "packet_data": packet_data, "clientID": clientID });
@@ -52,17 +56,13 @@ function client(clientID) {
     }
     
     if (packet == "sResponsecRequestURL_Packet") {
-			// window.location.href = "/" + packet_data;
-      let DATA = "";
-      fetch(window.location.href + "/" + packet_data)
-  .then(data => DATA = data);
-      console.log(DATA);
-			document.querySelector('html').html = DATA;
+      window.location.href = window.location.href + packet_data;
 		}
-
 		console.log(packet);
 		console.log(packet_data);
 	});
+
+
 
 	let submit = document.getElementById("submit");
 
@@ -71,6 +71,8 @@ function client(clientID) {
 		console.log(url);
 		sendc2sPacket("cRequestURL_Packet", url);
 	}
+
+
 
   async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
